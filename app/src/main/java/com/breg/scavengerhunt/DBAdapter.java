@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.io.Console;
 // ------------------------------------ DBADapter.java ---------------------------------------------
 
 
@@ -19,19 +21,19 @@ public class DBAdapter {
     public static final String KEY_DESC = "desc";
     public static final String KEY_DATE = "date";
     public static final String KEY_ACTION = "action";
-    public static final int COL_TITLE = 1;
-    public static final int COL_DESC = 2;
-    public static final int COL_DATE = 3;
-    public static final int COL_ACTION = 4;
+    public static final String KEY_LATITUDE = "latitude";
+    public static final String KEY_LONGITUDE = "longitude";
+    public static final String KEY_TIME = "time";
+    public static final String KEY_SCORE = "score";
 
-
-    public static final String[] ALL_KEYS = new String[] {KEY_ROWID, KEY_TITLE, KEY_DESC, KEY_DATE, KEY_ACTION};
+    public static final String[] ALL_KEYS = new String[]{KEY_ROWID, KEY_TITLE, KEY_DESC, KEY_DATE, KEY_ACTION,
+        KEY_LATITUDE, KEY_LONGITUDE, KEY_TIME, KEY_SCORE};
 
     // DB info: it's name, and the table we are using (just one).
-    public static final String DATABASE_NAME = "MyDb";
-    public static final String DATABASE_TABLE = "mainTable";
+    public static final String DATABASE_NAME = "Locations Database";
+    public static final String DATABASE_TABLE = "locTable";
     // Track DB version if a new version of your app changes the format.
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     private static final String DATABASE_CREATE_SQL =
             "create table " + DATABASE_TABLE
@@ -39,7 +41,11 @@ public class DBAdapter {
                     + KEY_TITLE + " text not null, "
                     + KEY_DESC + " integer not null, "
                     + KEY_DATE + " text not null, "
-                    + KEY_ACTION + " text not null "
+                    + KEY_ACTION + " text not null, "
+                    + KEY_LATITUDE + " real not null, "
+                    + KEY_LONGITUDE + " real not null, "
+                    + KEY_TIME + " text not null, "
+                    + KEY_SCORE + " integer not null "
                     + ");";
 
     // Context of application who uses us.
@@ -69,13 +75,18 @@ public class DBAdapter {
     }
 
     // Add a new set of values to the database.
-    public long insertRow(String title, String desc, String date, String action) {
+    public long insertRow(String title, String desc, String date, String action, double latitude, double longitude, String time, int score) {
         // Create row's data:
+        Log.d("Test", "Row Inserted locally.");
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_TITLE, title);
         initialValues.put(KEY_DESC, desc);
         initialValues.put(KEY_DATE, date);
         initialValues.put(KEY_ACTION, action);
+        initialValues.put(KEY_LATITUDE, latitude);
+        initialValues.put(KEY_LONGITUDE, longitude);
+        initialValues.put(KEY_TIME, time);
+        initialValues.put(KEY_SCORE, score);
 
         // Insert it into the database.
         return db.insert(DATABASE_TABLE, null, initialValues);
@@ -121,7 +132,7 @@ public class DBAdapter {
     }
 
     // Change an existing row to be equal to new data.
-    public boolean updateRow(long rowId, String title, String desc, String date, String action) {
+    public boolean updateRow(long rowId, String title, String desc, String date, String action, double latitude, double longitude, String time, int score) {
         String where = KEY_ROWID + "=" + rowId;
 
         // Create row's data:
@@ -130,6 +141,10 @@ public class DBAdapter {
         newValues.put(KEY_DESC, desc);
         newValues.put(KEY_DATE, date);
         newValues.put(KEY_ACTION, action);
+        newValues.put(KEY_LATITUDE, latitude);
+        newValues.put(KEY_LONGITUDE, longitude);
+        newValues.put(KEY_TIME, time);
+        newValues.put(KEY_SCORE, score);
 
         // Insert it into the database.
         return db.update(DATABASE_TABLE, newValues, where, null) != 0;

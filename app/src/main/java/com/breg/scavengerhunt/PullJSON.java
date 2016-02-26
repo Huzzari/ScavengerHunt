@@ -1,8 +1,8 @@
 package com.breg.scavengerhunt;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,16 +12,20 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created by darkhobbo on 2/25/2016.
  */
 public class PullJSON extends AsyncTask<String, String, String>{
+    Context ctx;
     int id,Score;
     double  Latitude,Longitude;
     String Title,DESC,DATE,ACTION,Time;
+
+    public PullJSON(Context newCtx){
+        ctx = newCtx;
+    }
 
     @Override
     protected String doInBackground(String... params){
@@ -60,7 +64,6 @@ public class PullJSON extends AsyncTask<String, String, String>{
                     }
                     break;
             }
-
         } catch (MalformedURLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -79,6 +82,8 @@ public class PullJSON extends AsyncTask<String, String, String>{
 
     public void decodeJSON(String objs) {
         try {
+            DBAdapter dbAdapter = new DBAdapter(ctx);
+            dbAdapter.open();
             Log.d("JSON", "** ========== R E A D I N G   J A S O N   A R R A Y ======== **");
             JSONArray jsonObjects = new JSONArray(objs);
             for (int x = 0; x < jsonObjects.length(); x++) {
@@ -106,6 +111,7 @@ public class PullJSON extends AsyncTask<String, String, String>{
                     Score = 0;
                 else
                     Score = Integer.valueOf(Score_temp);
+
                 Log.d("JSON", "** ID = " + String.valueOf(id));
                 Log.d("JSON", "** Title = " + Title);
                 Log.d("JSON", "** DESC = " + DESC);
@@ -116,7 +122,10 @@ public class PullJSON extends AsyncTask<String, String, String>{
                 Log.d("JSON", "** Time = " + Time);
                 Log.d("JSON", "** Score = " + Score);
                 Log.d("JSON", "** ================== **");
+                // Adding data to local SQLDB.
+                dbAdapter.insertRow(Title, DESC, DATE, ACTION, Latitude, Longitude, Time, Score);
             }
+            dbAdapter.close();
         }catch (Exception e){//JSONException e) {
             e.printStackTrace();
         }
