@@ -1,8 +1,10 @@
 package com.breg.scavengerhunt;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -11,6 +13,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -24,6 +29,58 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+        // Doing a test data pull. This also adds the data to the local db.
+        DBAdapter dbAdapter = new DBAdapter(this);
+        dbAdapter.open();
+
+        // Pull data if local db has no rows.
+        if(dbAdapter.getAllRows().getCount() == 0)
+            new PullJSON(this).execute();
+
+        dbAdapter.close();
+
+
+
+
+        /*
+            Data is now stored locally.
+            To pull data, we use dbAdapter.getAllRows() and dbAdapter.getRow(rowId)
+            A cursor will be returned for both of those methods.
+
+            To deal with the curson, we will create a cursor object.
+
+            Cursor c = dbAdapter.getAllRows();
+
+            We then just get each data point.
+
+
+
+         */
+
+        DBAdapter testAdapter = new DBAdapter(this);
+        testAdapter.open();
+        Cursor c = testAdapter.getAllRows();
+        testAdapter.close();
+        Log.d("test", "Row count: " + c.getCount());
+        String thisRow = "";
+
+        while(!c.isAfterLast()){
+            thisRow += "TITLE: " + c.getString(c.getColumnIndex("title")) + "\n";
+            thisRow += "DESC: " + c.getString(c.getColumnIndex("desc")) + "\n";
+            thisRow += "DATE: " + c.getString(c.getColumnIndex("date")) + "\n";
+            thisRow += "ACTION: " + c.getString(c.getColumnIndex("action")) + "\n";
+            thisRow += "LATITUDE: " + c.getDouble(c.getColumnIndex("latitude")) + "\n";
+            thisRow += "LONGITUDE: " + c.getDouble(c.getColumnIndex("longitude")) + "\n";
+            thisRow += "TIME: " + c.getDouble(c.getColumnIndex("time")) + "\n";
+            thisRow += "SCORE: " + c.getDouble(c.getColumnIndex("score")) + "\n";
+            thisRow += "***************************************************************\n";
+            Log.d("Row", thisRow);
+            thisRow = "";
+            c.moveToNext();
+        }
+        c.close();
     }
 
     @Override
