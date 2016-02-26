@@ -1,7 +1,9 @@
 package com.breg.scavengerhunt;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,5 +33,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng point1 = new LatLng(50.67046254, -120.3623406);
         mMap.addMarker(new MarkerOptions().position(point1).title("Test Point"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(point1));
+    }
+
+    public void onClick_collection(View v){
+
+        Intent newActivity1 = new Intent(MapsActivity.this, CollectionActivity.class);
+        startActivity(newActivity1);
+
     }
 }
