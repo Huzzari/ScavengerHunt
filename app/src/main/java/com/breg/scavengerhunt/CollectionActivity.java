@@ -1,5 +1,6 @@
 package com.breg.scavengerhunt;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -38,6 +39,8 @@ public class CollectionActivity extends AppCompatActivity {
 
     public void onClick_scavenge(View v){
 
+        Intent newActivity1 = new Intent(CollectionActivity.this, MapsActivity.class);
+        startActivity(newActivity1);
 
     }
 }
