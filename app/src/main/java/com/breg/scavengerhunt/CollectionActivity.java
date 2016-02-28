@@ -39,8 +39,8 @@ public class CollectionActivity extends AppCompatActivity {
 
     public void onClick_scavenge(View v){
 
-        Intent newActivity1 = new Intent(CollectionActivity.this, MapsActivity.class);
-        startActivity(newActivity1);
-
+        //Intent newActivity1 = new Intent(CollectionActivity.this, MapsActivity.class);
+        //startActivity(newActivity1);
+        finish();
     }
 }
