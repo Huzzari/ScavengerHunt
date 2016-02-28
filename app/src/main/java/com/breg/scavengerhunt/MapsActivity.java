@@ -66,6 +66,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("test", "Row count: " + c.getCount());
         String thisRow = "";
 
+        //push values into variables
+
         while(!c.isAfterLast()){
             thisRow += "TITLE: " + c.getString(c.getColumnIndex("title")) + "\n";
             thisRow += "DESC: " + c.getString(c.getColumnIndex("desc")) + "\n";
@@ -98,6 +100,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Intent newActivity1 = new Intent(MapsActivity.this, CollectionActivity.class);
         startActivity(newActivity1);
+
+    }
+
+    public void onClick_TTS(View v){
+
+
 
     }
 }
