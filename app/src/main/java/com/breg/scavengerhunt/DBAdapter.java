@@ -32,8 +32,9 @@ public class DBAdapter {
     // DB info: it's name, and the table we are using (just one).
     public static final String DATABASE_NAME = "Locations Database";
     public static final String DATABASE_TABLE = "locTable";
+
     // Track DB version if a new version of your app changes the format.
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_CREATE_SQL =
             "create table " + DATABASE_TABLE

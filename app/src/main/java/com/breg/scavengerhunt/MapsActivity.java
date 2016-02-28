@@ -11,16 +11,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    //LatLng min1, min2, min3, max1, max2, max3, mid1, mid2, mid3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,74 +27,79 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
-        // Doing a test data pull. This also adds the data to the local db.
-        DBAdapter dbAdapter = new DBAdapter(this);
-        dbAdapter.open();
-
-        // Pull data if local db has no rows.
-        if(dbAdapter.getAllRows().getCount() == 0)
-            new PullJSON(this).execute();
-
-        dbAdapter.close();
-
-
-
-
-        /*
-            Data is now stored locally.
-            To pull data, we use dbAdapter.getAllRows() and dbAdapter.getRow(rowId)
-            A cursor will be returned for both of those methods.
-
-            To deal with the curson, we will create a cursor object.
-
-            Cursor c = dbAdapter.getAllRows();
-
-            We then just get each data point.
-
-
-
-         */
-
-        DBAdapter testAdapter = new DBAdapter(this);
-        testAdapter.open();
-        Cursor c = testAdapter.getAllRows();
-        testAdapter.close();
-        Log.d("test", "Row count: " + c.getCount());
-        String thisRow = "";
-
-        while(!c.isAfterLast()){
-            thisRow += "TITLE: " + c.getString(c.getColumnIndex("title")) + "\n";
-            thisRow += "DESC: " + c.getString(c.getColumnIndex("desc")) + "\n";
-            thisRow += "DATE: " + c.getString(c.getColumnIndex("date")) + "\n";
-            thisRow += "ACTION: " + c.getString(c.getColumnIndex("action")) + "\n";
-            thisRow += "LATITUDE: " + c.getDouble(c.getColumnIndex("latitude")) + "\n";
-            thisRow += "LONGITUDE: " + c.getDouble(c.getColumnIndex("longitude")) + "\n";
-            thisRow += "TIME: " + c.getDouble(c.getColumnIndex("time")) + "\n";
-            thisRow += "SCORE: " + c.getDouble(c.getColumnIndex("score")) + "\n";
-            thisRow += "***************************************************************\n";
-            Log.d("Row", thisRow);
-            thisRow = "";
-            c.moveToNext();
-        }
-        c.close();
+        Log.d("Test", "**************************************************" +
+                "\n**************************************************");
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        LatLng point1 = new LatLng(50.67046254, -120.3623406);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point1,16));
+        DBAdapter dbAdapter = new DBAdapter(this);
+        dbAdapter.open();
 
-        LatLng mid1 = new LatLng(50.67046254, -120.3623406);
-        LatLng OM = new LatLng(50.670983, -120.362951);
-        mMap.addMarker(new MarkerOptions().position(mid1).title("Item 1"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(OM));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);
+        // Pull data if local db has no rows.
+        if(dbAdapter.getAllRows().getCount() == 0){
+            PullJSON pull = new PullJSON(this);
+            pull.execute();
+            try{
+                if(pull.get().equals("done")) // Update map now with the local SQL DB data points.
+                    addLocations(googleMap);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        else // Update map with local SQL DB data points.
+            addLocations(googleMap);
+        dbAdapter.close();
     }
 
     public void onClick_collection(View v){
-
         Intent newActivity1 = new Intent(MapsActivity.this, CollectionActivity.class);
         startActivity(newActivity1);
+    }
 
+    public void addLocations(GoogleMap googleMap){
+        DBAdapter testAdapter = new DBAdapter(this);
+        testAdapter.open();
+        Cursor c = testAdapter.getAllRows();
+        testAdapter.close();
+        //String thisRow = "";
+        String centerPoint, title;
+        double latitude, longitude;
+
+        while(!c.isAfterLast()){
+            title = c.getString(c.getColumnIndex("title"));
+            centerPoint = c.getString(c.getColumnIndex("desc"));
+            latitude = c.getDouble(c.getColumnIndex("latitude"));
+            longitude = c.getDouble(c.getColumnIndex("longitude"));
+
+            /*
+            thisRow += "TITLE: " + title + "\n";
+            thisRow += "DESC: " + centerPoint + "\n";
+            thisRow += "DATE: " + c.getString(c.getColumnIndex("date")) + "\n";
+            thisRow += "ACTION: " + c.getString(c.getColumnIndex("action")) + "\n";
+            thisRow += "LATITUDE: " + latitude + "\n";
+            thisRow += "LONGITUDE: " + longitude + "\n";
+            thisRow += "TIME: " + c.getDouble(c.getColumnIndex("time")) + "\n";
+            thisRow += "SCORE: " + c.getDouble(c.getColumnIndex("score")) + "\n";
+            thisRow += "***************************************************************\n";
+            Log.d("Test", thisRow);*/
+
+            if(c.getString(c.getColumnIndex("desc")).equals("Center")){
+                // This is a center point.
+                Log.d("Test", title + " has " + centerPoint + " at lat: " + latitude + " long: " + longitude);
+                // Add this to gmap.
+                 mMap.addMarker(new MarkerOptions()
+                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.cross))
+                         .anchor(.5f, .5f) // Anchors the marker on the bottom left
+                         .position(new LatLng(latitude, longitude)));
+                Log.d("Test", "New marker added.");
+            }
+            //thisRow = "";
+            c.moveToNext();
+        }
+        c.close();
     }
 }

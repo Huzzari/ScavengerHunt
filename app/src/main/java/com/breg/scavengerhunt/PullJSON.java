@@ -77,7 +77,7 @@ public class PullJSON extends AsyncTask<String, String, String>{
                 }
             }
         }
-        return null;
+        return "done";
     }
 
     public void decodeJSON(String objs) {
@@ -93,7 +93,6 @@ public class PullJSON extends AsyncTask<String, String, String>{
                 DESC = oneObject.getString("DESC");
                 DATE = oneObject.getString("DATE");
                 ACTION = oneObject.getString("ACTION");
-
                 String Lat_temp = oneObject.getString("Latitude");
                 if (Lat_temp == "" || Lat_temp == "null" || Lat_temp.isEmpty())
                     Latitude = 0.0;
@@ -111,7 +110,7 @@ public class PullJSON extends AsyncTask<String, String, String>{
                     Score = 0;
                 else
                     Score = Integer.valueOf(Score_temp);
-
+                /*
                 Log.d("JSON", "** ID = " + String.valueOf(id));
                 Log.d("JSON", "** Title = " + Title);
                 Log.d("JSON", "** DESC = " + DESC);
@@ -121,7 +120,7 @@ public class PullJSON extends AsyncTask<String, String, String>{
                 Log.d("JSON", "** Longitude = " + Longitude);
                 Log.d("JSON", "** Time = " + Time);
                 Log.d("JSON", "** Score = " + Score);
-                Log.d("JSON", "** ================== **");
+                Log.d("JSON", "** ================== **");*/
                 // Adding data to local SQLDB.
                 dbAdapter.insertRow(Title, DESC, DATE, ACTION, Latitude, Longitude, Time, Score);
             }
@@ -129,5 +128,11 @@ public class PullJSON extends AsyncTask<String, String, String>{
         }catch (Exception e){//JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        Log.d("Test", "All data should now be in the local db.");
+        //super.onPostExecute(result);
     }
 }

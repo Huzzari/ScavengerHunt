@@ -1,8 +1,7 @@
 <resources>
-    <string name="app_name">Scavenger Hunt</string>
+    <string name="app_name">asdsd</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_collection">Collection</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 </resources>
