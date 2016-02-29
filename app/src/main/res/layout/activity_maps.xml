@@ -30,7 +30,8 @@ android:orientation="vertical"
         android:text="Search for Item"
         android:id="@+id/button3"
         android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="itemSearch" />
 
     <TextView
         android:layout_width="wrap_content"
