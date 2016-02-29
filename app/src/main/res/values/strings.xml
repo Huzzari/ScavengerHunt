@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">asdsd</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="app_name">Scavenger Hunt</string>
+    <string name="title_activity_maps">Scavenger Hunt</string>
     <string name="title_activity_collection">Collection</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="desc">Collect the shovel, compass, and map that are scattered across campus so that you can go find some buried treasure!</string>
 </resources>

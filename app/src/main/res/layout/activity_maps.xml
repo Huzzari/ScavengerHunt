@@ -11,17 +11,34 @@ android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     class="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_above="@+id/button" />
+    android:layout_alignBottom="@+id/button" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="go to Collection"
+        android:text="Look at my Collection"
         android:id="@+id/button"
         android:layout_gravity="center_horizontal"
+        android:onClick="onClick_collection"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="onClick_collection" />
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Search for Item"
+        android:id="@+id/button3"
+        android:layout_above="@+id/button"
+        android:layout_centerHorizontal="true"
+        android:onClick="itemSearch" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/textView"
+        android:layout_above="@+id/button3"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
