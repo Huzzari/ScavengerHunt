@@ -41,13 +41,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     LocationListener locationListener;
     Location lastKnownLocation;
     String bestProvider;
-    double latitude;
-    double longitude;
+    double latitude = 0.0;
+    double longitude = 0.0;
     int counter =0;
     int locationNum=1;
     int row, column;
     double[][] itemLocations =  new double[3][4];
-    //TextView text1;
+    TextView text1;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker shovelMark, compassMark, mapMark;
@@ -86,8 +86,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bestProvider = locationManager.getBestProvider(criteria, true);
         Log.d("Location", "1- Recommended Location provider is " + bestProvider);
         Log.d("Test", "2");
-        lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
-        UpdateLocation(lastKnownLocation, "Last Known Location");
+        //lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
+        //UpdateLocation(lastKnownLocation, "Last Known Location");
 
         Log.d("Test", "3");
         // 2. Define a listener that responds to location updates
@@ -247,8 +247,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //longitude = -120.3621892;
 
         //map
-        latitude = 50.67129548;
-        longitude = -120.363716;
+        //latitude = 50.67129548;
+        //longitude = -120.363716;
         //-----------------------------------------------------------------------------------------
 
 
