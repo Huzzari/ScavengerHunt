@@ -239,7 +239,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //-----------------------------------------------------------------------------------------
 
         //shovel
-        //latitude = 50.67046254;
+        latitude = 50.67046254;
         //longitude = -120.3623406;
 
         //compass
