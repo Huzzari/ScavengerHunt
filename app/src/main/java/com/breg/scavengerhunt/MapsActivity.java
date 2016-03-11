@@ -39,7 +39,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     LocationManager locationManager;
     LocationListener locationListener;
-    Location lastKnownLocation;
+    //Location lastKnownLocation, shovelLoc, compassLoc, mapLoc;
     String bestProvider;
     double latitude = 0.0;
     double longitude = 0.0;
@@ -51,6 +51,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker shovelMark, compassMark, mapMark;
+    Location shovelLoc, compassLoc, mapLoc;
 
     public static final String DATA = "com.breg.scavengerhunt";
 
@@ -63,7 +64,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         initializeData();
-        //text1 = (TextView) findViewById(R.id.textView);
+        text1 = (TextView) findViewById(R.id.textView);
 
         Log.d("Test", "**************************************************" +
                 "\n**************************************************");
@@ -104,6 +105,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             public void onProviderDisabled(String provider) {}
         };
+
+        shovelLoc = new Location("shovel");
+        compassLoc = new Location("compass");
+        mapLoc = new Location("map");
 
 
     }//end of onCreate
@@ -180,6 +185,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d("Test", "New marker added.");
                     counter = 0;
                     row++;
+
+                    shovelLoc.setLatitude(latitude);
+                    shovelLoc.setLongitude(longitude);
                 }
                 else if(row == 1) {
                     compassMark = mMap.addMarker(new MarkerOptions()
@@ -189,6 +197,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d("Test", "New marker added.");
                     counter = 0;
                     row++;
+
+                    compassLoc.setLatitude(latitude);
+                    compassLoc.setLongitude(longitude);
                 }
                 else if(row == 2) {
                     mapMark = mMap.addMarker(new MarkerOptions()
@@ -198,6 +209,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d("Test", "New marker added.");
                     counter = 0;
                     row++;
+
+                    mapLoc.setLatitude(latitude);
+                    mapLoc.setLongitude(longitude);
                 }
             }
             else if(counter == 0){
@@ -223,6 +237,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d("Test", "#" + locationNum + "Location" + "** " + state + " ** - Lattitue = " + latitude + ", and Longitude = " + longitude);
         //text1.setText("#" + locationNum + "Location: " + state + " ** - \nLattitue = " + latitude + "\nLongitude = " + longitude);
         locationNum++;
+        checkDistance(location);
+
     }
 
     public boolean itemSearch(View v){
@@ -356,6 +372,59 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapMark.remove();
         }
     }
+
+    public void checkDistance(Location currentLoc){
+
+        float closest = -1;
+        float temp = -1;
+        Location current = new Location("Current");
+        Location marker = new Location("Marker");
+
+        SharedPreferences sp = getSharedPreferences(DATA, MODE_PRIVATE);
+
+        boolean shovel, compass, map;
+        shovel = sp.getBoolean("shovelFound", false);
+        compass = sp.getBoolean("compassFound", false);
+        map = sp.getBoolean("mapFound", false);
+        int result = -1;
+
+        if(shovel && compass && map) {
+            text1.setText("All items are found!");
+        }
+        else {
+            if (!shovel) {
+                Log.d("Test", "shovel");
+                temp = currentLoc.distanceTo(shovelLoc);
+                if (closest == -1) {
+                    closest = temp;
+                } else if (temp < closest) {
+                    closest = temp;
+                }
+            }
+            if (!compass) {
+                Log.d("Test", "compass");
+                temp = currentLoc.distanceTo(compassLoc);
+                if (closest == -1) {
+                    closest = temp;
+                } else if (temp < closest) {
+                    closest = temp;
+                }
+            }
+            if (!map) {
+                Log.d("Test", "map");
+                temp = currentLoc.distanceTo(shovelLoc);
+                if (closest == -1) {
+                    closest = temp;
+                } else if (temp < closest) {
+                    closest = temp;
+                }
+            }
+
+            result = (int) closest;
+            text1.setText("Distance to closest item: " + result + " meters");
+        }
+    }
+
 
 
 }//end
